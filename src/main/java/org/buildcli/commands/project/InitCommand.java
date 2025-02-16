@@ -1,19 +1,28 @@
 package org.buildcli.commands.project;
 
-import org.buildcli.domain.BuildCLICommand;
-import org.buildcli.exceptions.CommandExecutorRuntimeException;
-import org.buildcli.log.SystemOutLogger;
-import picocli.CommandLine.Command;
-import picocli.CommandLine.Option;
-
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
-@Command(name = "init", aliases ={"i"}, description = "", mixinStandardHelpOptions = true)
+import org.buildcli.domain.BuildCLICommand;
+import org.buildcli.exceptions.CommandExecutorRuntimeException;
+import org.buildcli.log.SystemOutLogger;
+
+import picocli.CommandLine.Command;
+import picocli.CommandLine.Option;
+
+
+@Command(
+    name = "init",
+    aliases = {"i"},
+    description = "Initializes a new project. This command sets up a new project structure.",
+    mixinStandardHelpOptions = true
+)
 public class InitCommand implements BuildCLICommand {
   @Option(names = {"--name", "-n"}, defaultValue = "buildcli")
   private String projectName;
+  @Option(names = {"--jdk", "-j"}, defaultValue = "17")
+  private String jdkVersion;
 
   @Override
   public void run() {
@@ -89,8 +98,8 @@ public class InitCommand implements BuildCLICommand {
                     <version>1.0-SNAPSHOT</version>
             
                     <properties>
-                        <maven.compiler.source>17</maven.compiler.source>
-                        <maven.compiler.target>17</maven.compiler.target>
+                        <maven.compiler.source>%s</maven.compiler.source>
+                        <maven.compiler.target>${maven.compiler.source}</maven.compiler.target>
                         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
                     </properties>
             
@@ -129,7 +138,7 @@ public class InitCommand implements BuildCLICommand {
                         </plugins>
                     </build>
                 </project>
-            """.formatted(projectName.toLowerCase(), projectName, projectName.toLowerCase()));
+            """.formatted(projectName.toLowerCase(), projectName, jdkVersion, projectName.toLowerCase()));
       }
       SystemOutLogger.log("pom.xml file created with default configuration.");
     }
