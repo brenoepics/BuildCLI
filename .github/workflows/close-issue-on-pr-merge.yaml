@@ -8,10 +8,14 @@ permissions:
   issues: write
   pull-requests: read
 
+permissions: {}
+
 jobs:
   close-issue:
     runs-on: ubuntu-latest
     if: github.event.pull_request.merged == true
+    permissions:
+        issues: write
 
 
     steps:
